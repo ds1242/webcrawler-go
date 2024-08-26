@@ -1,20 +1,39 @@
 package main
 
-
 import (
 	"testing"
 )
 
 func TestNormalizeURL(t *testing.T) {
 	tests := []struct {
-		name 		string
-		inputURL 	string
-		expected 	string
-	} {
+		name     string
+		inputURL string
+		expected string
+	}{
 		{
-		name: 		"remove scheme",
-		inputURL: 	"https://blog.boot.dev/path",
-		expected:	"blog.boot.dev/path",
+			name:     "remove scheme https",
+			inputURL: "https://blog.boot.dev/path",
+			expected: "blog.boot.dev/path",
+		},
+		{
+			name:     "remove scheme http",
+			inputURL: "http://blog.boot.dev/path",
+			expected: "blog.boot.dev/path",
+		},
+		{
+			name:     "remove scheme trailing /",
+			inputURL: "http://blog.boot.dev/path/",
+			expected: "blog.boot.dev/path/",
+		},
+		{
+			name:     "remove scheme trailing /",
+			inputURL: "https://blog.boot.dev/path/",
+			expected: "blog.boot.dev/path/",
+		},
+		{
+			name:     "extended path",
+			inputURL: "https://blog.boot.dev/path/to/something",
+			expected: "blog.boot.dev/path/to/something",
 		},
 	}
 
