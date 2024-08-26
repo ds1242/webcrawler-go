@@ -35,13 +35,18 @@ func TestNormalizeURL(t *testing.T) {
 			inputURL: "https://blog.boot.dev/path/to/something",
 			expected: "blog.boot.dev/path/to/something",
 		},
+		{
+			name:     "no path",
+			inputURL: "https://blog.boot.dev",
+			expected: "blog.boot.dev",
+		},
 	}
 
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			actual, err := normalizeURL(tc.inputURL)
 			if err != nil {
-				t.Errorf("Test %v = '%s' FAIL: unexpected error: %v", i, tc.name, err)
+				t.Errorf("Test %v - '%s' FAIL: unexpected error: %v", i, tc.name, err)
 				return
 			}
 			if actual != tc.expected {
