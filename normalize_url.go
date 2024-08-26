@@ -1,8 +1,15 @@
 package main
 
+import (
+	// "fmt"
+	"net/url"
+)
 
+func normalizeURL(rawURL string) (string, error) {
+	parsedURL, err := url.Parse(rawURL)
+	if err != nil {
+		return "", err
+	}
 
-func normalizeURL(url string) (string, error) {
-
-	return "", nil
+	return parsedURL.Host + parsedURL.Path, nil
 }
