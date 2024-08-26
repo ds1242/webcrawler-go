@@ -1,8 +1,8 @@
 package main
 
 import (
-	"strings"
 	"fmt"
+	"strings"
 
 	"golang.org/x/net/html"
 )
@@ -13,7 +13,7 @@ func getURLsFromHTML(htmlBody, rawBaseURL string) ([]string, error) {
 	if err != nil {
 		return []string{"", ""}, err
 	}
-	
+
 	linkSlice = parseNode(doc, linkSlice)
 
 	fmt.Println(linkSlice)

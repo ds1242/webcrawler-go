@@ -1,11 +1,9 @@
 package main
 
-
 import (
-	"testing"
 	"reflect"
+	"testing"
 )
-
 
 func TestGetURLsFromHTML(t *testing.T) {
 	htmlString := `
@@ -22,16 +20,16 @@ func TestGetURLsFromHTML(t *testing.T) {
 `
 
 	tests := []struct {
-		name		string
-		inputHTML	string
-		inputURL	string
-		expected	[]string
+		name      string
+		inputHTML string
+		inputURL  string
+		expected  []string
 	}{
 		{
-			name: 			"get absolute and relatives url from html body",
-			inputHTML:		htmlString,
-			inputURL: 		"https://blog.boot.dev",
-			expected: 		[]string{"https://blog.boot.dev/path/one", "https://other.com/path/one"},
+			name:      "get absolute and relatives url from html body",
+			inputHTML: htmlString,
+			inputURL:  "https://blog.boot.dev",
+			expected:  []string{"https://blog.boot.dev/path/one", "https://other.com/path/one"},
 		},
 	}
 
