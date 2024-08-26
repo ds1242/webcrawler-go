@@ -31,6 +31,30 @@ func TestGetURLsFromHTML(t *testing.T) {
 			inputURL:  "https://blog.boot.dev",
 			expected:  []string{"https://blog.boot.dev/path/one", "https://other.com/path/one"},
 		},
+		{
+			name:      "search string",
+			inputHTML: `<a href="/search?q=golang#results">Search</a>`,
+			inputURL:  "https://blog.boot.dev",
+			expected:  []string{"https://blog.boot.dev/search?q=golang#results"},
+		},
+		{
+			name:      "difference protocols",
+			inputHTML: `<a href="ftp://example.com/file.zip">Download</a>`,
+			inputURL:  "https://blog.boot.dev",
+			expected:  []string{"ftp://example.com/file.zip"},
+		},
+		{
+			name:      "difference ports",
+			inputHTML: `<a href="https://example.com:8080/api">API</a>`,
+			inputURL:  "https://blog.boot.dev",
+			expected:  []string{"https://example.com:8080/api"},
+		},
+		{
+			name:      "special characters or spaces in url",
+			inputHTML: `<a href="/path with spaces/file.html">Spaced Path</a>`,
+			inputURL:  "https://blog.boot.dev",
+			expected:  []string{"https://blog.boot.dev/path%20with%20spaces/file.html"},
+		},
 	}
 
 	for i, tc := range tests {
