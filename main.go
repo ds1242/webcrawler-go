@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
+	argsWithProg := os.Args
+	fmt.Println((argsWithProg[1]))
 }
