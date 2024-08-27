@@ -19,12 +19,8 @@ func main() {
 
 	pages := make(map[string]int)
 	
-	pages, err := crawlPage(baseURL, baseURL, pages)
-	if err != nil {
-		fmt.Printf("error crawling page: %v\n", err)
-		os.Exit(1)
-	}
-
+	crawlPage(baseURL, baseURL, pages)
+	
 	for key, val := range pages {
 		fmt.Printf("%s: %d\n", key, val)
 	}

@@ -30,7 +30,7 @@ func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) {
 
 	if pages[normalizedURL] > 0 {
 		pages[normalizedURL]++
-		return pages, nil
+		return 
 	} else {
 		pages[normalizedURL]++
 	}
@@ -44,15 +44,10 @@ func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) {
 	// fmt.Println("getting urls from html body")
 	sliceOfURLs, err := getURLsFromHTML(body, rawCurrentURL)
 	if err != nil {
-		return pages, fmt.Errorf("error getting urls from body: %v", err)
+		fmt.Errorf("error getting urls from body: %v", err)
+		return 
 	}
 	for _, url := range sliceOfURLs {
-		pages, err = crawlPage(rawBaseURL, url, pages)
-		if err != nil {
-			return pages, err
-		}
+		crawlPage(rawBaseURL, url, pages)
 	}
-	
-	return pages, nil
-
 }
