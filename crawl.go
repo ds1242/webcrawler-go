@@ -6,24 +6,26 @@ import (
 	"log"
 )
 
-func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) (map[string]int, error) {
+func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) {
 	baseURL, err := url.Parse(rawBaseURL)
 	if err != nil {
-		return pages, err
+		fmt.Printf("Error - crawlPage: couldn't parse URL '%s': %v\n", rawBaseURL, err)
+		return 
 	}
-
+	
 	currentURL, err := url.Parse(rawCurrentURL)
 	if err != nil {
-		return pages, err
+		fmt.Printf("Error - crawlPage: couldn't parse URL '%s': %v\n", rawCurrentURL, err)
+		return 
 	}
 
 	if baseURL.Host != currentURL.Host {
-		return pages, nil
+		return
 	}
 
 	normalizedURL, err := normalizeURL(rawCurrentURL)
 	if err != nil {
-		return pages, err
+		fmt.Printf("Error - normalizedURL: %v", err)
 	}
 
 	if pages[normalizedURL] > 0 {
