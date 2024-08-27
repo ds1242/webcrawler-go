@@ -13,22 +13,21 @@ func getHTML(rawURL string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	body, err := io.ReadAll(res.Body)
-
+	
 	defer res.Body.Close()
 	if res.StatusCode > 399 {
 		return "", errors.New("response failed with bad status code")
 	}
-	if err != nil {
-		return "", err
-	}
 	contentType := res.Header.Get("Content-Type")
 	if !strings.Contains(contentType, "text/html") {
-		err := fmt.Errorf("wrong content type: %v", contentType)
-		return "", err
+		return "", fmt.Errorf("wrong content type: %v", contentType)
 	}
-
+	
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return "", fmt.Errorf("couldn't read response body: %v", err)
+	}
+	
 	bodyHTML := string(body)
 
 	return bodyHTML, nil
