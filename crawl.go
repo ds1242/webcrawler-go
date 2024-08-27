@@ -22,4 +22,6 @@ func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) (map[stri
 
 	normalizedURL, err := normalizeURL(rawCurrentURL)
 
+	return pages, nil
+
 }
