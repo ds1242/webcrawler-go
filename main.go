@@ -17,4 +17,6 @@ func main() {
 
 	baseURL := os.Args[1]
 	fmt.Printf("starting crawl of: %s\n", baseURL)
+
+	getHTML(baseURL)
 }
