@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/url"
+	"log"
 )
 
 func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) (map[string]int, error) {
@@ -20,7 +21,6 @@ func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) (map[stri
 		return pages, nil
 	}
 
-	fmt.Println("normalize url and add to count")
 	normalizedURL, err := normalizeURL(rawCurrentURL)
 	if err != nil {
 		return pages, err
@@ -36,7 +36,7 @@ func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) (map[stri
 	fmt.Printf("crawling %s\n", rawCurrentURL)
 	body, err := getHTML(rawCurrentURL)
 	if err != nil {
-		return pages, fmt.Errorf("unable to get HTML body: %v", err)
+		log.Printf("unable to get HTML body: %v\n", err)
 	}
 
 	// fmt.Println("getting urls from html body")
