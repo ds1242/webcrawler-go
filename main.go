@@ -16,7 +16,6 @@ func main() {
 	}
 
 	baseURL := os.Args[1]
-	fmt.Printf("starting crawl of: %s\n", baseURL)
 
 	pages := make(map[string]int)
 	
@@ -26,11 +25,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(pages)
-	//if err != nil {
-	//	fmt.Errorf("an error occurred parsing the urls from the html: %v", err)
-	//	os.Exit(1)
-	//}
-
-	//fmt.Println(sliceOfURLs)
+	for key, val := range pages {
+		fmt.Printf("%s: %d\n", key, val)
+	}
 }
