@@ -2,8 +2,19 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"os"
+	"sync"
 )
+
+type config struct {
+	pages 				map[string]int
+	baseURL				*url.URL
+	mu 					*sync.Mutex
+	concurrencyControl 	chan struct{}
+	wg 					*sync.WaitGroup
+}
+
 
 func main() {
 	if len(os.Args) < 2 {
