@@ -8,29 +8,22 @@ import (
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("no website provided")
-		os.Exit(1)
+		return
 	}
 	if len(os.Args) > 2 {
 		fmt.Println("too many arguments provided")
-		os.Exit(1)
+		return
 	}
 
 	baseURL := os.Args[1]
-	fmt.Printf("starting crawl of: %s\n", baseURL)
 
-	body, err := getHTML(baseURL)
-	if err != nil {
-		fmt.Errorf("unable to get HTML body: %v", err)
-		os.Exit(1)
+	fmt.Printf("starting crawl of: %s...\n", baseURL)
+
+	pages := make(map[string]int)
+
+	crawlPage(baseURL, baseURL, pages)
+
+	for normalizedURL, count := range pages {
+		fmt.Printf("%s: %d\n", normalizedURL, count)
 	}
-	fmt.Println(body)
-	//var sliceOfURLs []string
-
-	//sliceOfURLs, err = getURLsFromHTML(body, baseURL)
-	//if err != nil {
-	//	fmt.Errorf("an error occurred parsing the urls from the html: %v", err)
-	//	os.Exit(1)
-	//}
-
-	//fmt.Println(sliceOfURLs)
 }
