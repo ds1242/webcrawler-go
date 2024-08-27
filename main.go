@@ -23,5 +23,14 @@ func main() {
 		fmt.Errorf("unable to get HTML body: %v", err)
 		os.Exit(1)
 	}
-	fmt.Println(body)
+
+	var sliceOfURLs []string
+
+	sliceOfURLs, err = getURLsFromHTML(body, baseURL)
+	if err != nil {
+		fmt.Errorf("an error occurred parsing the urls from the html: %v", err)
+		os.Exit(1)
+	}
+
+	fmt.Println(sliceOfURLs)
 }
