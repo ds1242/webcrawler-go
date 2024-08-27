@@ -16,13 +16,15 @@ func getHTML(rawURL string) (string, error) {
 	body, err := io.ReadAll(res.Body)
 
 	defer res.Body.Close()
-	if res.StatusCode > 299 {
+	if res.StatusCode > 399 {
 		return "", errors.New("Response failed with bad status code")
 	}
 	if err != nil {
 		return "", err
 	}
 
-	fmt.Println(body)
-	return "", nil
+	fmt.Printf("%s", body)
+	bodyHTML := string(body)
+
+	return bodyHTML, nil
 }
