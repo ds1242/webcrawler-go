@@ -29,11 +29,11 @@ func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) (map[stri
 	if pages[normalizedURL] > 0 {
 		pages[normalizedURL]++
 		return pages, nil
+	} else {
+		pages[normalizedURL]++
 	}
-	
-	pages[normalizedURL]++
 
-	fmt.Println("getting html")
+	fmt.Printf("crawling %s\n", rawCurrentURL)
 	body, err := getHTML(rawCurrentURL)
 	if err != nil {
 		return pages, fmt.Errorf("unable to get HTML body: %v", err)
@@ -45,12 +45,10 @@ func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) (map[stri
 		return pages, fmt.Errorf("error getting urls from body: %v", err)
 	}
 	for _, url := range sliceOfURLs {
-		// fmt.Printf("crawling slice baseURL: %v, new currentURL: %v\n", rawBaseURL, url)
 		pages, err = crawlPage(rawBaseURL, url, pages)
 		if err != nil {
 			return pages, err
 		}
-		// fmt.Println(url)
 	}
 	
 	return pages, nil
