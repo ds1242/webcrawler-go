@@ -18,7 +18,7 @@ func getHTML(rawURL string) (string, error) {
 
 	defer res.Body.Close()
 	if res.StatusCode > 399 {
-		return "", errors.New("Response failed with bad status code")
+		return "", errors.New("response failed with bad status code")
 	}
 	if err != nil {
 		return "", err

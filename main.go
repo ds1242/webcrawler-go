@@ -18,15 +18,15 @@ func main() {
 	baseURL := os.Args[1]
 	fmt.Printf("starting crawl of: %s\n", baseURL)
 
-	body, err := getHTML(baseURL)
+	pages := make(map[string]int)
+	
+	pages, err := crawlPage(baseURL, baseURL, pages)
 	if err != nil {
-		fmt.Errorf("unable to get HTML body: %v", err)
+		fmt.Printf("error crawling page: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Println(body)
-	//var sliceOfURLs []string
 
-	//sliceOfURLs, err = getURLsFromHTML(body, baseURL)
+	fmt.Println(pages)
 	//if err != nil {
 	//	fmt.Errorf("an error occurred parsing the urls from the html: %v", err)
 	//	os.Exit(1)
