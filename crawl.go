@@ -2,21 +2,21 @@ package main
 
 import (
 	"fmt"
-	"net/url"
 	"log"
+	"net/url"
 )
 
 func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) {
 	baseURL, err := url.Parse(rawBaseURL)
 	if err != nil {
 		fmt.Printf("Error - crawlPage: couldn't parse URL '%s': %v\n", rawBaseURL, err)
-		return 
+		return
 	}
-	
+
 	currentURL, err := url.Parse(rawCurrentURL)
 	if err != nil {
 		fmt.Printf("Error - crawlPage: couldn't parse URL '%s': %v\n", rawCurrentURL, err)
-		return 
+		return
 	}
 
 	if baseURL.Host != currentURL.Host {
@@ -30,7 +30,7 @@ func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) {
 
 	if pages[normalizedURL] > 0 {
 		pages[normalizedURL]++
-		return 
+		return
 	} else {
 		pages[normalizedURL]++
 	}
@@ -45,7 +45,7 @@ func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) {
 	sliceOfURLs, err := getURLsFromHTML(body, rawCurrentURL)
 	if err != nil {
 		fmt.Errorf("error getting urls from body: %v", err)
-		return 
+		return
 	}
 	for _, url := range sliceOfURLs {
 		crawlPage(rawBaseURL, url, pages)

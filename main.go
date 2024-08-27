@@ -18,9 +18,9 @@ func main() {
 	baseURL := os.Args[1]
 
 	pages := make(map[string]int)
-	
+
 	crawlPage(baseURL, baseURL, pages)
-	
+
 	for key, val := range pages {
 		fmt.Printf("%s: %d\n", key, val)
 	}
