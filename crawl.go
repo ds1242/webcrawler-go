@@ -6,7 +6,7 @@ import (
 	"net/url"
 )
 
-func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) {
+func (cfg *config) crawlPage(rawCurrentURL string) {
 	baseURL, err := url.Parse(rawBaseURL)
 	if err != nil {
 		fmt.Printf("Error - crawlPage: couldn't parse URL '%s': %v\n", rawBaseURL, err)
@@ -50,4 +50,8 @@ func crawlPage(rawBaseURL, rawCurrentURL string, pages map[string]int) {
 	for _, url := range sliceOfURLs {
 		crawlPage(rawBaseURL, url, pages)
 	}
+}
+
+func (cfg *config) addPageVisit(normalizedURL string) (isFirst bool) {
+	
 }
