@@ -7,8 +7,11 @@ import (
 )
 
 func (cfg *config) crawlPage(rawCurrentURL string) {
-	defer cfg.wg.Done()
-	defer func() { <-cfg.concurrencyControl }()
+	cfg.concurrencyControl <- struct{}{}
+	defer func() {
+		<-cfg.concurrencyControl
+		cfg.wg.Done()
+	}()
 
 
 	currentURL, err := url.Parse(rawCurrentURL)
@@ -17,7 +20,7 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		return
 	}
 
-	if cfg.baseURL.Host != currentURL.Host {
+	if cfg.baseURL.Hostname() != currentURL.Hostname() {
 		return
 	}
 
@@ -31,21 +34,19 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		return
 	}
 
-	fmt.Printf("crawling %s\n", rawCurrentURL)
+	// fmt.Printf("crawling %s\n", rawCurrentURL)
 	body, err := getHTML(rawCurrentURL)
 	if err != nil {
 		log.Printf("unable to get HTML body: %v\n", err)
 	}
 
-	fmt.Println("getting urls from html body")
-	sliceOfURLs, err := getURLsFromHTML(body, rawCurrentURL)
+	sliceOfNextURLs, err := getURLsFromHTML(body, cfg.baseURL)
 	if err != nil {
 		fmt.Printf("error getting urls from body: %v\n", err)
 		return
 	}
-	for _, url := range sliceOfURLs {
+	for _, url := range sliceOfNextURLs {
 		cfg.wg.Add(1)
-		cfg.concurrencyControl <- struct{}{}
 		go cfg.crawlPage(url)
 	}
 }
