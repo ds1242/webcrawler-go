@@ -1,12 +1,52 @@
 package main
 
 import (
+	"net/url"
 	"reflect"
+	"strings"
 	"testing"
 )
 
 func TestGetURLsFromHTML(t *testing.T) {
-	htmlString := `
+	cases := []struct {
+		name          string
+		inputURL      string
+		inputBody     string
+		expected      []string
+		errorContains string
+	}{
+		{
+			name:     "absolute URL",
+			inputURL: "https://blog.boot.dev",
+			inputBody: `
+<html>
+	<body>
+		<a href="https://blog.boot.dev">
+			<span>Boot.dev</span>
+		</a>
+	</body>
+</html>
+`,
+			expected: []string{"https://blog.boot.dev"},
+		},
+		{
+			name:     "relative URL",
+			inputURL: "https://blog.boot.dev",
+			inputBody: `
+<html>
+	<body>
+		<a href="/path/one">
+			<span>Boot.dev</span>
+		</a>
+	</body>
+</html>
+`,
+			expected: []string{"https://blog.boot.dev/path/one"},
+		},
+		{
+			name:     "absolute and relative URLs",
+			inputURL: "https://blog.boot.dev",
+			inputBody: `
 <html>
 	<body>
 		<a href="/path/one">
@@ -17,55 +57,74 @@ func TestGetURLsFromHTML(t *testing.T) {
 		</a>
 	</body>
 </html>
-`
-
-	tests := []struct {
-		name      string
-		inputHTML string
-		inputURL  string
-		expected  []string
-	}{
-		{
-			name:      "get absolute and relatives url from html body",
-			inputHTML: htmlString,
-			inputURL:  "https://blog.boot.dev",
-			expected:  []string{"https://blog.boot.dev/path/one", "https://other.com/path/one"},
+`,
+			expected: []string{"https://blog.boot.dev/path/one", "https://other.com/path/one"},
 		},
 		{
-			name:      "search string",
-			inputHTML: `<a href="/search?q=golang#results">Search</a>`,
-			inputURL:  "https://blog.boot.dev",
-			expected:  []string{"https://blog.boot.dev/search?q=golang#results"},
+			name:     "no href",
+			inputURL: "https://blog.boot.dev",
+			inputBody: `
+<html>
+	<body>
+		<a>
+			<span>Boot.dev></span>
+		</a>
+	</body>
+</html>
+`,
+			expected: nil,
 		},
 		{
-			name:      "difference protocols",
-			inputHTML: `<a href="ftp://example.com/file.zip">Download</a>`,
-			inputURL:  "https://blog.boot.dev",
-			expected:  []string{"ftp://example.com/file.zip"},
+			name:     "bad HTML",
+			inputURL: "https://blog.boot.dev",
+			inputBody: `
+<html body>
+	<a href="path/one">
+		<span>Boot.dev></span>
+	</a>
+</html body>
+`,
+			expected: []string{"https://blog.boot.dev/path/one"},
 		},
 		{
-			name:      "difference ports",
-			inputHTML: `<a href="https://example.com:8080/api">API</a>`,
-			inputURL:  "https://blog.boot.dev",
-			expected:  []string{"https://example.com:8080/api"},
-		},
-		{
-			name:      "special characters or spaces in url",
-			inputHTML: `<a href="/path with spaces/file.html">Spaced Path</a>`,
-			inputURL:  "https://blog.boot.dev",
-			expected:  []string{"https://blog.boot.dev/path%20with%20spaces/file.html"},
+			name:     "invalid href URL",
+			inputURL: "https://blog.boot.dev",
+			inputBody: `
+<html>
+	<body>
+		<a href=":\\invalidURL">
+			<span>Boot.dev</span>
+		</a>
+	</body>
+</html>
+`,
+			expected: nil,
 		},
 	}
 
-	for i, tc := range tests {
+	for i, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			actual, err := getURLsFromHTML(tc.inputHTML, tc.inputURL)
+			baseURL, err := url.Parse(tc.inputURL)
 			if err != nil {
-				t.Errorf("Test %v - '%s' FAIL: unexpected error: %v", i, tc.name, err)
+				t.Errorf("Test %v - '%s' FAIL: couldn't parse input URL: %v", i, tc.name, err)
 				return
 			}
+
+			actual, err := getURLsFromHTML(tc.inputBody, baseURL)
+			if err != nil && !strings.Contains(err.Error(), tc.errorContains) {
+				t.Errorf("Test %v - '%s' FAIL: unexpected error: %v", i, tc.name, err)
+				return
+			} else if err != nil && tc.errorContains == "" {
+				t.Errorf("Test %v - '%s' FAIL: unexpected error: %v", i, tc.name, err)
+				return
+			} else if err == nil && tc.errorContains != "" {
+				t.Errorf("Test %v - '%s' FAIL: expected error containing '%v', got none.", i, tc.name, tc.errorContains)
+				return
+			}
+
 			if !reflect.DeepEqual(actual, tc.expected) {
-				t.Errorf("Test %v - %s FAIL expected URLs: %v, actual: %v", i, tc.name, tc.expected, actual)
+				t.Errorf("Test %v - '%s' FAIL: expected URLs %v, got URLs %v", i, tc.name, tc.expected, actual)
+				return
 			}
 		})
 	}

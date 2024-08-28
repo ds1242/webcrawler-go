@@ -2,18 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/url"
 	"os"
-	"sync"
+	"strconv"
 )
-
-type config struct {
-	pages 				map[string]int
-	baseURL				*url.URL
-	mu 					*sync.Mutex
-	concurrencyControl 	chan struct{}
-	wg 					*sync.WaitGroup
-}
 
 
 func main() {
@@ -21,20 +12,56 @@ func main() {
 		fmt.Println("no website provided")
 		return
 	}
-	if len(os.Args) > 2 {
+	if len(os.Args) > 4 {
 		fmt.Println("too many arguments provided")
 		return
 	}
+	var maxPagesArg string
+	var maxConcurrencyArg string
 
-	baseURL := os.Args[1]
+	var maxPages int
+	var maxConcurrency int
 
-	fmt.Printf("starting crawl of: %s...\n", baseURL)
+	rawBaseURL := os.Args[1]
+	if len(os.Args[2]) > 0 {
+		maxConcurrencyArg = os.Args[2]
+	} else {
+		maxConcurrencyArg = "3"
+	}
+	if len(os.Args[3]) > 0 {
+		maxPagesArg = os.Args[3]
+	} else {
+		maxPagesArg = "25"
+	}
+	
+	maxConcurrency, err := strconv.Atoi(maxConcurrencyArg)
+	if err != nil {
+		fmt.Printf("Error converting arg type: %v", err)
+		return
+	}
 
-	pages := make(map[string]int)
+	maxPages, err = strconv.Atoi(maxPagesArg)
+	if err != nil {
+		fmt.Printf("Error converting arg type: %v", err)
+		return
+	}
 
-	crawlPage(baseURL, baseURL, pages)
 
-	for normalizedURL, count := range pages {
+	cfg, err := configure(rawBaseURL, maxConcurrency, maxPages)
+	if err != nil {
+		fmt.Printf("Error - configure: %v", err)
+		return
+	}
+	
+	fmt.Printf("starting crawl of: %s...\n", rawBaseURL)
+
+	cfg.wg.Add(1)	
+	go cfg.crawlPage(rawBaseURL)
+	cfg.wg.Wait()
+
+	fmt.Println("All pages crawled")
+
+	for normalizedURL, count := range cfg.pages {
 		fmt.Printf("%s: %d\n", normalizedURL, count)
 	}
 }
