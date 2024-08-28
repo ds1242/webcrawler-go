@@ -23,7 +23,7 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 	}
 
 	isFirst := cfg.addPageVisit(normalizedURL)
-	if isFirst == false {
+	if !isFirst {
 		return
 	}
 	
