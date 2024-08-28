@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 )
 
 
@@ -11,15 +12,42 @@ func main() {
 		fmt.Println("no website provided")
 		return
 	}
-	if len(os.Args) > 2 {
+	if len(os.Args) > 4 {
 		fmt.Println("too many arguments provided")
 		return
 	}
+	var maxPagesArg string
+	var maxConcurrencyArg string
+
+	var maxPages int
+	var maxConcurrency int
 
 	rawBaseURL := os.Args[1]
-	const maxConcurrency = 5
+	if len(os.Args[2]) > 0 {
+		maxConcurrencyArg = os.Args[2]
+	} else {
+		maxConcurrencyArg = "3"
+	}
+	if len(os.Args[3]) > 0 {
+		maxPagesArg = os.Args[3]
+	} else {
+		maxPagesArg = "25"
+	}
 	
-	cfg, err := configure(rawBaseURL, maxConcurrency)
+	maxConcurrency, err := strconv.Atoi(maxConcurrencyArg)
+	if err != nil {
+		fmt.Printf("Error converting arg type: %v", err)
+		return
+	}
+
+	maxPages, err = strconv.Atoi(maxPagesArg)
+	if err != nil {
+		fmt.Printf("Error converting arg type: %v", err)
+		return
+	}
+
+
+	cfg, err := configure(rawBaseURL, maxConcurrency, maxPages)
 	if err != nil {
 		fmt.Printf("Error - configure: %v", err)
 		return
