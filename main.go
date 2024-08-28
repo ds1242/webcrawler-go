@@ -17,7 +17,7 @@ func main() {
 	}
 
 	rawBaseURL := os.Args[1]
-	const maxConcurrency = 1
+	const maxConcurrency = 5
 	
 	cfg, err := configure(rawBaseURL, maxConcurrency)
 	if err != nil {
