@@ -37,7 +37,7 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 	// fmt.Println("getting urls from html body")
 	sliceOfURLs, err := getURLsFromHTML(body, rawCurrentURL)
 	if err != nil {
-		fmt.Errorf("error getting urls from body: %v", err)
+		fmt.Printf("error getting urls from body: %v\n", err)
 		return
 	}
 	for _, url := range sliceOfURLs {
@@ -46,6 +46,10 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 }
 
 func (cfg *config) addPageVisit(normalizedURL string) (isFirst bool) {
+	// lock the map to prevent it from being overwritten or edited by multiple goroutines
+	cfg.mu.Lock()
+	defer cfg.mu.Unlock()
+
 	if cfg.pages[normalizedURL] > 0 {
 		cfg.pages[normalizedURL]++
 		isFirst = false
