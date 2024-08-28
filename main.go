@@ -52,7 +52,7 @@ func main() {
 
 	pages := make(map[string]int)
 
-	cfg.crawlPage()
+	cfg.crawlPage(rawBaseURL)
 
 	for normalizedURL, count := range pages {
 		fmt.Printf("%s: %d\n", normalizedURL, count)

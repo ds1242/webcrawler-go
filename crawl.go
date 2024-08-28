@@ -7,11 +7,6 @@ import (
 )
 
 func (cfg *config) crawlPage(rawCurrentURL string) {
-	baseURL, err := url.Parse(rawBaseURL)
-	if err != nil {
-		fmt.Printf("Error - crawlPage: couldn't parse URL '%s': %v\n", rawBaseURL, err)
-		return
-	}
 
 	currentURL, err := url.Parse(rawCurrentURL)
 	if err != nil {
@@ -53,5 +48,5 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 }
 
 func (cfg *config) addPageVisit(normalizedURL string) (isFirst bool) {
-	
+
 }
