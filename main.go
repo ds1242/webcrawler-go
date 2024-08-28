@@ -49,8 +49,14 @@ func main() {
 	
 	fmt.Printf("starting crawl of: %s...\n", baseURL)
 
+	cfg.wg.Add(1)
+	go func ()  {
+		defer cfg.wg.Done()
+		cfg.crawlPage(rawBaseURL)
+	} ()
 
-	cfg.crawlPage(rawBaseURL)
+	cfg.wg.Wait()
+	fmt.Println("All pages crawled")
 
 	for normalizedURL, count := range cfg.pages {
 		fmt.Printf("%s: %d\n", normalizedURL, count)
