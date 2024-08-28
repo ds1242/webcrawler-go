@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"net/url"
 	"os"
 	"sync"
@@ -50,11 +49,10 @@ func main() {
 	
 	fmt.Printf("starting crawl of: %s...\n", baseURL)
 
-	pages := make(map[string]int)
 
 	cfg.crawlPage(rawBaseURL)
 
-	for normalizedURL, count := range pages {
+	for normalizedURL, count := range cfg.pages {
 		fmt.Printf("%s: %d\n", normalizedURL, count)
 	}
 }

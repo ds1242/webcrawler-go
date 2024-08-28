@@ -7,14 +7,13 @@ import (
 )
 
 func (cfg *config) crawlPage(rawCurrentURL string) {
-
 	currentURL, err := url.Parse(rawCurrentURL)
 	if err != nil {
 		fmt.Printf("Error - crawlPage: couldn't parse URL '%s': %v\n", rawCurrentURL, err)
 		return
 	}
 
-	if baseURL.Host != currentURL.Host {
+	if cfg.baseURL.Host != currentURL.Host {
 		return
 	}
 
@@ -23,12 +22,11 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		fmt.Printf("Error - normalizedURL: %v", err)
 	}
 
-	if pages[normalizedURL] > 0 {
-		pages[normalizedURL]++
+	isFirst := cfg.addPageVisit(normalizedURL)
+	if isFirst == false {
 		return
-	} else {
-		pages[normalizedURL]++
 	}
+	
 
 	fmt.Printf("crawling %s\n", rawCurrentURL)
 	body, err := getHTML(rawCurrentURL)
@@ -43,10 +41,18 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		return
 	}
 	for _, url := range sliceOfURLs {
-		crawlPage(rawBaseURL, url, pages)
+		cfg.crawlPage(url)
 	}
 }
 
 func (cfg *config) addPageVisit(normalizedURL string) (isFirst bool) {
-
+	if cfg.pages[normalizedURL] > 0 {
+		cfg.pages[normalizedURL]++
+		isFirst = false
+	} else {
+		cfg.pages[normalizedURL]++
+		isFirst = true
+	}
+	
+	return isFirst
 }
