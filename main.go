@@ -27,7 +27,6 @@ func main() {
 	maxConcurrencyArg = os.Args[2]
 	maxPagesArg = os.Args[3]
 
-
 	maxConcurrency, err := strconv.Atoi(maxConcurrencyArg)
 	if err != nil {
 		fmt.Printf("Error converting maxConcurrencyArg type: %v\n", err)
