@@ -24,30 +24,25 @@ func main() {
 	}
 
 	rawBaseURL := os.Args[1]
+	maxConcurrencyArg = os.Args[2]
+	maxPagesArg = os.Args[3]
 
-	if len(os.Args) == 3 {
-		maxConcurrencyArg = os.Args[2]
-	}
-
-	if len(os.Args) == 4 {
-		maxPagesArg = os.Args[3]
-	} 
 
 	maxConcurrency, err := strconv.Atoi(maxConcurrencyArg)
 	if err != nil {
-		fmt.Printf("Error converting arg type: %v", err)
+		fmt.Printf("Error converting maxConcurrencyArg type: %v\n", err)
 		return
 	}
 
 	maxPages, err = strconv.Atoi(maxPagesArg)
 	if err != nil {
-		fmt.Printf("Error converting arg type: %v", err)
+		fmt.Printf("Error converting maxPageArg type: %v\n", err)
 		return
 	}
 
 	cfg, err := configure(rawBaseURL, maxConcurrency, maxPages)
 	if err != nil {
-		fmt.Printf("Error - configure: %v", err)
+		fmt.Printf("Error - configure: %v\n", err)
 		return
 	}
 
@@ -59,9 +54,10 @@ func main() {
 
 	fmt.Println("All pages crawled")
 
-	for normalizedURL, count := range cfg.pages {
-		fmt.Printf("%s: %d\n", normalizedURL, count)
-	}
+	// for normalizedURL, count := range cfg.pages {
+	// 	fmt.Printf("%s: %d\n", normalizedURL, count)
+	// }
 
+	printReport(cfg.pages, rawBaseURL)
 	// fmt.Printf("number of pages crawled: %v\n", len(cfg.pages))
 }
