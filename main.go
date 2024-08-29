@@ -53,10 +53,5 @@ func main() {
 
 	fmt.Println("All pages crawled")
 
-	// for normalizedURL, count := range cfg.pages {
-	// 	fmt.Printf("%s: %d\n", normalizedURL, count)
-	// }
-
 	printReport(cfg.pages, rawBaseURL)
-	// fmt.Printf("number of pages crawled: %v\n", len(cfg.pages))
 }
