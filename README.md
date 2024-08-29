@@ -12,7 +12,12 @@ To speed up the script increase the maxconConcurrency.  (careful not to overdo i
 Setting the maxPages will stop the script early if crawling a large website with lots of pages under the same domain i.e., Reddit (probably don't do this anyway)
 
 
-### Possible Future Enchancements
+## Setup Instructions
+Clone the repo `git clone this-repo`
+
+Then run `go tidy`
+
+## Possible Future Enchancements
 - Save the report as a CSV rather than print to console
 - Count external links, as well as internal links, and add them to the report
     - just don't crawl the external links
