@@ -7,12 +7,17 @@ import (
 )
 
 func (cfg *config) crawlPage(rawCurrentURL string) {
+
 	cfg.concurrencyControl <- struct{}{}
 	defer func() {
 		<-cfg.concurrencyControl
 		cfg.wg.Done()
 	}()
 
+	maxPagesReached := cfg.checkPagesLength()
+	if maxPagesReached {
+		return
+	}
 
 	currentURL, err := url.Parse(rawCurrentURL)
 	if err != nil {
@@ -28,7 +33,7 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 	if err != nil {
 		fmt.Printf("Error - normalizedURL: %v", err)
 	}
-	
+
 	isFirst := cfg.addPageVisit(normalizedURL)
 	if !isFirst {
 		return
@@ -49,4 +54,11 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		cfg.wg.Add(1)
 		go cfg.crawlPage(url)
 	}
+}
+
+func (cfg *config) checkPagesLength() (maxPagesReached bool) {
+	cfg.mu.Lock()
+	defer cfg.mu.Unlock()
+
+	return len(cfg.pages) > cfg.maxPages
 }
