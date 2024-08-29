@@ -14,8 +14,7 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		cfg.wg.Done()
 	}()
 
-	maxPagesReached := cfg.checkPagesLength()
-	if maxPagesReached {
+	if cfg.checkPagesLength() >= cfg.maxPages {
 		return
 	}
 	fmt.Printf("crawling page: %s\n", rawCurrentURL)
@@ -56,9 +55,9 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 	}
 }
 
-func (cfg *config) checkPagesLength() (maxPagesReached bool) {
+func (cfg *config) checkPagesLength() (pageLength int) {
 	cfg.mu.Lock()
 	defer cfg.mu.Unlock()
 
-	return len(cfg.pages) > cfg.maxPages
+	return len(cfg.pages)
 }
