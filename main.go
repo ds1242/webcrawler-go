@@ -13,8 +13,9 @@ func main() {
 	var maxPages int
 	var maxConcurrency int
 
-	if len(os.Args) < 2 {
-		fmt.Println("no website provided")
+	if len(os.Args) < 4 {
+		fmt.Println("not enough arguments provided")
+		fmt.Println("usage: crawler <baseURL> <maxConcurrency> <maxPages>")
 		return
 	}
 	if len(os.Args) > 4 {
@@ -26,14 +27,11 @@ func main() {
 
 	if len(os.Args) == 3 {
 		maxConcurrencyArg = os.Args[2]
-	} else {
-		maxConcurrencyArg = "3"
 	}
+
 	if len(os.Args) == 4 {
 		maxPagesArg = os.Args[3]
-	} else {
-		maxPagesArg = "25"
-	}
+	} 
 
 	maxConcurrency, err := strconv.Atoi(maxConcurrencyArg)
 	if err != nil {
