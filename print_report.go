@@ -12,34 +12,29 @@ type Page struct {
 
 func printReport(pages map[string]int, baseURL string) {
 	
-	var pageSlice []Page
-	
-	for normalizedURL, count := range pages {
-		pageSlice = append(pageSlice, Page{
-			URL: 	normalizedURL,
-			Count: 	count,
-		})
-	}
-	sort.Sort(ByPageCountAndTitle(pageSlice))
+	sortedPages := sortPages(pages)
 	
 	fmt.Printf(`=============================
 REPORT for %s
 =============================`, baseURL)
 	fmt.Println()
 
-	for _, page := range pageSlice{
+	for _, page := range sortedPages{
 		fmt.Printf("Found %d internal links to %s\n", page.Count, page.URL)
 	}
 }
 
 
-type ByPageCountAndTitle []Page
-
-func (p ByPageCountAndTitle) Len() int           { return len(p) }
-func (p ByPageCountAndTitle) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
-func (p ByPageCountAndTitle) Less(i, j int) bool { 
-	if p[i].Count == p[j].Count {
-		return p[i].URL < p[j].URL
+func sortPages(pages map[string]int) []Page {
+	pagesSlice := []Page{}
+	for url, count := range pages {
+		pagesSlice = append(pagesSlice, Page{URL: url, Count: count})
 	}
-	return p[i].Count > p[j].Count 
+	sort.Slice(pagesSlice, func(i, j int) bool {
+		if pagesSlice[i].Count == pagesSlice[j].Count {
+			return pagesSlice[i].URL < pagesSlice[j].URL
+		}
+		return pagesSlice[i].Count > pagesSlice[j].Count
+	})
+	return pagesSlice
 }
