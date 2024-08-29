@@ -6,8 +6,8 @@ import (
 )
 
 type Page struct {
-	PageURL 	string
-	LinkCount	int
+	URL 	string
+	Count	int
 }
 
 func printReport(pages map[string]int, baseURL string) {
@@ -16,8 +16,8 @@ func printReport(pages map[string]int, baseURL string) {
 	
 	for normalizedURL, count := range pages {
 		pageSlice = append(pageSlice, Page{
-			PageURL: 	normalizedURL,
-			LinkCount: 	count,
+			URL: 	normalizedURL,
+			Count: 	count,
 		})
 	}
 	sort.Sort(ByPageCountAndTitle(pageSlice))
@@ -28,7 +28,7 @@ REPORT for %s
 	fmt.Println()
 
 	for _, page := range pageSlice{
-		fmt.Printf("Found %d internal links to %s\n", page.LinkCount, page.PageURL)
+		fmt.Printf("Found %d internal links to %s\n", page.Count, page.URL)
 	}
 }
 
@@ -38,8 +38,8 @@ type ByPageCountAndTitle []Page
 func (p ByPageCountAndTitle) Len() int           { return len(p) }
 func (p ByPageCountAndTitle) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 func (p ByPageCountAndTitle) Less(i, j int) bool { 
-	if p[i].LinkCount == p[j].LinkCount {
-		return p[i].PageURL < p[j].PageURL
+	if p[i].Count == p[j].Count {
+		return p[i].URL < p[j].URL
 	}
-	return p[i].LinkCount > p[j].LinkCount 
+	return p[i].Count > p[j].Count 
 }
