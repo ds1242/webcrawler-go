@@ -8,6 +8,12 @@ import (
 
 
 func main() {
+	var maxPagesArg string
+	var maxConcurrencyArg string
+
+	var maxPages int
+	var maxConcurrency int
+
 	if len(os.Args) < 2 {
 		fmt.Println("no website provided")
 		return
@@ -16,23 +22,20 @@ func main() {
 		fmt.Println("too many arguments provided")
 		return
 	}
-	var maxPagesArg string
-	var maxConcurrencyArg string
-
-	var maxPages int
-	var maxConcurrency int
-
+	
 	rawBaseURL := os.Args[1]
-	if len(os.Args[2]) > 0 {
+	
+	if len(os.Args) == 3 {
 		maxConcurrencyArg = os.Args[2]
 	} else {
 		maxConcurrencyArg = "3"
 	}
-	if len(os.Args[3]) > 0 {
+	if len(os.Args) == 4 {
 		maxPagesArg = os.Args[3]
 	} else {
 		maxPagesArg = "25"
 	}
+	
 	
 	maxConcurrency, err := strconv.Atoi(maxConcurrencyArg)
 	if err != nil {
