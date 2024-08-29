@@ -41,5 +41,5 @@ func (p ByPageCountAndTitle) Less(i, j int) bool {
 	if p[i].LinkCount == p[j].LinkCount {
 		return p[i].PageURL < p[j].PageURL
 	}
-	return p[i].LinkCount < p[j].LinkCount 
+	return p[i].LinkCount > p[j].LinkCount 
 }
